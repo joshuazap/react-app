@@ -2,21 +2,49 @@
 
 var React = require('react');
 
+var Pane = React.createClass({
+  getInitialState: function(){
+    return {
+      show: this.props.data.showOnLoad
+    };
+  },
+
+  toggle: function(){
+    this.setState({
+      show: !this.state.show
+    });
+  },
+
+  render: function(){
+    var getContent = (function(item){
+      return this.state.show ? (
+        <div className="accordion-content">
+          {item.content}
+        </div>
+      ) : '';
+    }).bind(this);
+
+    var item = this.props.data;
+
+    return (
+      <div>
+        <div className="accordion-header" onClick={this.toggle}>
+          {item.name}
+        </div>
+        { getContent(item) }
+      </div>
+    );
+  }
+});
+
 var Accordion = React.createClass({
-  render: function() {
+  render: function(){
     var panes = [];
     var data = this.props.data || [];
 
-    data.forEach(function(item, index) {
+    data.forEach(function(item, index){
       panes.push(
-        <div key={index}>
-          <div className="accordion-header">
-            {item.name}
-          </div>
-          <div className="accordion-content">
-            {item.content}
-          </div>
-        </div>
+        <Pane data={item} key={index}/>
       );
     });
 
